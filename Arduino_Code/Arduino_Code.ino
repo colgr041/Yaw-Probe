@@ -6,7 +6,7 @@ float maxVolt = refVolt * 0.9;
 float minVolt = refVolt * 0.1;
 float vPerUnit = refVolt / 1024.0;
 float paPerMV = 2500 / (maxVolt - minVolt);
-float paOffset = 15.26;
+float paOffset = 15.26; // Currently, that's the value from the thesis, should be replaced by our sensor offset value
 
 float mV1 = 0;
 float mV2 = 0;
@@ -15,7 +15,7 @@ float pa2 = 0;
 float deltaP = 0;
 
 unsigned long lastTime = 0;
-unsigned long sampleTime = 50;
+unsigned long sampleTime = 50; // 20 Hz
 
 void setup() {
   Serial.begin(115200);
