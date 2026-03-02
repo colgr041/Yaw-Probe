@@ -6,7 +6,8 @@ float maxVolt = refVolt * 0.9;
 float minVolt = refVolt * 0.1;
 float vPerUnit = refVolt / 1024.0;
 float paPerMV = 2500 / (maxVolt - minVolt);
-float paOffset = 15.26; // Currently, that's the value from the thesis, should be replaced by our sensor offset value
+float paOffset1 = 15.26; // Currently, that's the value from the thesis, should be replaced by our sensor offset value
+float paOffset2 = 15.26; // Currently, that's the value from the thesis, should be replaced by our sensor offset value
 
 float mV1 = 0;
 float mV2 = 0;
@@ -15,7 +16,7 @@ float pa2 = 0;
 float deltaP = 0;
 
 unsigned long lastTime = 0;
-unsigned long sampleTime = 50; // 20 Hz
+unsigned long sampleTime = 50; // Sampling frequency of 20 Hz
 
 void setup() {
   Serial.begin(115200);
@@ -29,10 +30,10 @@ void loop() {
     mV1 = voltOnPin(readPin1);
     mV2 = voltOnPin(readPin2);
 
-    pa1 = vToPa(mV1) + paOffset;
-    pa2 = vToPa(mV2) + paOffset;
+    pa1 = vToPa(mV1) + paOffset1;
+    pa2 = vToPa(mV2) + paOffset2;
 
-    deltaP = pa1 - pa2;
+    deltaP = pa1 - pa2; // Currently, the pressure difference between the two sensors is printed additionally
 
     Serial.print(lastTime);
     Serial.print(",");
