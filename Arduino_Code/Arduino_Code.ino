@@ -1,13 +1,12 @@
 #define readPin1 A0
 #define readPin2 A1
 
-// -------- Kalibrierparameter --------
-float refVolt = 4983;                 // Measured reference voltage in mV
-float maxVolt = refVolt * 0.9;        // Voltage at highest pressure
-float minVolt = refVolt * 0.1;        // Voltage at minimum pressure
-float vPerUnit = refVolt / 1024.0;    // mV per ADC-Schritt
+float refVolt = 5000; // TODO: Measure Arduino reference voltage with multimeter and replace the standard value here
+float maxVolt = refVolt * 0.9;
+float minVolt = refVolt * 0.1;
+float vPerUnit = refVolt / 1024.0;
 float paPerMV = 2500 / (maxVolt - minVolt);
-float paOffset = 15.26;               // Sensor offset
+float paOffset = 15.26;
 
 float mV1 = 0;
 float mV2 = 0;
@@ -16,9 +15,7 @@ float pa2 = 0;
 float deltaP = 0;
 
 unsigned long lastTime = 0;
-unsigned long sampleTime = 50;        // Time interval in ms (20 Hz)
-
-// ------------------------------------
+unsigned long sampleTime = 50;
 
 void setup() {
   Serial.begin(115200);
@@ -46,8 +43,6 @@ void loop() {
     Serial.println(deltaP, 3);
   }
 }
-
-// Functions
 
 float voltOnPin(int pin) {
   return analogRead(pin) * vPerUnit;
