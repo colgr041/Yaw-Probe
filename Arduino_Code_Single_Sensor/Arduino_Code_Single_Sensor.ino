@@ -10,11 +10,13 @@ float paOffset = 15.26; // Currently, that's the value from the thesis, should b
 float mV = 0;
 float pa = 0;
 
+
+
 unsigned long lastTime = 0;
-unsigned long sampleTime = 50; // Sampling frequency of 20 Hz
+unsigned long sampleTime = 500; // Sampling frequency of 20 Hz
 
 void setup() {
-  Serial.begin(115200);
+  Serial.begin(9600);
   Serial.println("Time_ms,Pa");
 }
 
@@ -23,6 +25,7 @@ void loop() {
     lastTime = millis();
 
     mV = voltOnPin(readPin1);
+    double pinreading = analogRead(readPin1);
 
     pa = vToPa(mV) + paOffset;
 
