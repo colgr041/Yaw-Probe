@@ -13,11 +13,12 @@ float pa = 0;
 
 
 unsigned long lastTime = 0;
-unsigned long sampleTime = 500; // Sampling frequency of 20 Hz
+unsigned long sampleTime = 100; // Sampling frequency of 20 Hz
 
 void setup() {
-  Serial.begin(9600);
-  Serial.println("Time_ms,Pa");
+  Serial.begin(115200);
+  //Serial.println("Time_ms,Pa");
+
 }
 
 void loop() {
@@ -25,8 +26,7 @@ void loop() {
     lastTime = millis();
 
     mV = voltOnPin(readPin1);
-    double pinreading = analogRead(readPin1);
-
+    
     pa = vToPa(mV) + paOffset;
 
 
