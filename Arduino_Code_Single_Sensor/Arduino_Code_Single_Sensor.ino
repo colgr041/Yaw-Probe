@@ -5,7 +5,7 @@ float maxVolt = refVolt * 0.9;
 float minVolt = refVolt * 0.1;
 float vPerUnit = refVolt / 1024.0;
 float paPerMV = 2500 / (maxVolt - minVolt);
-float paOffset = 15.26; // Currently, that's the value from the thesis, should be replaced by our sensor offset value
+float paOffset = -21.3; // Depends on the sensor, but that is roughly the value we observed for one of the sensors
 
 float mV = 0;
 float pa = 0;
