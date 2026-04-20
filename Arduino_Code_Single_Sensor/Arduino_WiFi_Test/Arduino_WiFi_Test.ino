@@ -1,96 +1,68 @@
 #include <WiFiS3.h>
 
-// WiFi Credentials
 const char* WIFI_SSID     = "Pixel_4693";
 const char* WIFI_PASSWORD = "Kiaalemtar1";
 
-
-// Google Apps Script ID (Extracted from your URL)
+// JUST the ID from your deployment URL
+const String scriptId = "AKfycbzAflNSHzJLlss_OeV9qJeStFWLepOGeiiKrZvRYaBC73e9tjf8hz79jbRbn7DWuzE-EA";
 const char* host = "script.google.com";
-const String scriptId = "AKfycbwYZ_Syd-xtPo38JfX8YVcFsLa_PMY2h4M0FNJ_htyq7S97lZGC8o_w89wQ5iQ2aaWfug";
 
-// Sensor pin
 const int sensorPin = A0;
-
-// Offset & Conversion
 float paOffset = 15.26;
 float refVolt  = 5000.0; 
-float maxVolt  = refVolt * 0.9;
-float minVolt  = refVolt * 0.1;
 float vPerUnit = refVolt / 1024.0;
-float paPerMV  = 2500.0 / (maxVolt - minVolt);
+float paPerMV  = 2500.0 / (4500.0 - 500.0); // Simplified calculation
 
-// Timing - INCREASED TO 2 SECONDS to prevent Google blocking you
 unsigned long lastTime = 0;
-unsigned long sampleTime = 2000; 
+unsigned long sampleTime = 5000; // 5 SECONDS - Google needs time to breathe!
 
-// CRITICAL: Use WiFiSSLClient for HTTPS
 WiFiSSLClient client;
 
 void setup() {
   Serial.begin(115200);
   delay(1000);
-
-  Serial.print("Connecting to WiFi...");
+  
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
-
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
     Serial.print(".");
   }
-
-  Serial.println("\nWiFi connected!");
-  Serial.print("IP Address: ");
-  Serial.println(WiFi.localIP());
+  Serial.println("\nWiFi Connected!");
 }
 
 void loop() {
   if (millis() - lastTime >= sampleTime) {
     lastTime = millis();
 
-    // Sensor math
     float mV = (analogRead(sensorPin) * vPerUnit);
-    float pa = ((mV - minVolt) * paPerMV) - 1250 + paOffset;
+    float pa = ((mV - 500.0) * paPerMV) - 1250 + paOffset;
 
-    sendDataToGoogle(lastTime, pa);
+    sendToGoogle(lastTime, pa);
   }
 }
 
-void sendDataToGoogle(unsigned long timeVal, float pressure) {
-  Serial.println("\nConnecting to Google...");
-
+void sendToGoogle(unsigned long t, float p) {
   if (client.connect(host, 443)) {
-    Serial.println("Connected to server.");
+    // Construct the path manually to ensure no hidden characters
+    String url = "/macros/s/" + scriptId + "/exec?time=" + String(t) + "&p1=" + String(p, 2);
+    
+    client.println("GET " + url + " HTTP/1.1");
+    client.println("Host: script.google.com");
+    client.println("User-Agent: Arduino/1.0");
+    client.println("Connection: close");
+    client.println();
 
-    // Create the path for the GET request
-    // IMPORTANT: Do NOT include "https://script.google.com" in the GET string
-    String url = "/macros/s/" + scriptId + "/exec";
-    url += "?time=" + String(timeVal);
-    url += "&p1=" + String(pressure, 3);
-
-    // Send HTTP Request
-    client.print("GET " + url + " HTTP/1.1\r\n");
-    client.print("Host: " + String(host) + "\r\n");
-    client.print("User-Agent: ArduinoUnoR4\r\n");
-    client.print("Connection: close\r\n");
-    client.print("\r\n"); // End of headers
-
-    Serial.println("Data sent. Waiting for response...");
-
-    // Read response (Optional, helps debugging)
-    while (client.connected()) {
-      String line = client.readStringUntil('\n');
-      if (line == "\r") {
-        break; // Headers finished
+    Serial.println("Sent: " + String(p, 2) + " Pa");
+    
+    // Briefly read the response to clear the buffer
+    unsigned long timeout = millis();
+    while (client.connected() && millis() - timeout < 2000) {
+      if (client.available()) {
+        client.read(); // Just clear the data
       }
     }
-    String line = client.readStringUntil('\n');
-    Serial.println("Server Response: " + line);
-
+    client.stop(); 
   } else {
-    Serial.println("Connection to Google failed.");
+    Serial.println("Connection Failed");
   }
-  
-  client.stop(); // Close connection
 }
-
