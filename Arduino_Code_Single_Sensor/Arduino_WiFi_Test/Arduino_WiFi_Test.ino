@@ -4,9 +4,10 @@
 const char* WIFI_SSID     = "Pixel_4693";
 const char* WIFI_PASSWORD = "Kiaalemtar1";
 
+
 // Google Apps Script ID (Extracted from your URL)
 const char* host = "script.google.com";
-const String scriptId = "AKfycbxMBQ1ZsXD-jtYjnmYJ7SoHvjm-6mlCj--HSEa8KKKJUZa7WEfQCCEVPeF0D2mcifDAXw";
+const String scriptId = "AKfycbwYZ_Syd-xtPo38JfX8YVcFsLa_PMY2h4M0FNJ_htyq7S97lZGC8o_w89wQ5iQ2aaWfug";
 
 // Sensor pin
 const int sensorPin = A0;
