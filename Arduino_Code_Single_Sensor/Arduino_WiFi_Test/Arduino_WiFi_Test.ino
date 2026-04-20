@@ -1,11 +1,11 @@
 #include <WiFiS3.h>
 
 // WiFi
-const char* WIFI_SSID     = "HotspotName";
-const char* WIFI_PASSWORD = "HotspotPassword";
+const char* WIFI_SSID     = "Pixel_4693";
+const char* WIFI_PASSWORD = "Kiaalemtar1";
 
 // Google Apps Script URL
-const char* SCRIPT_URL = "https://script.google.com/a/macros/liuformulastudent.se/s/AKfycbzcoRDyBfO1Hcdgptk7WB1JkkOOY6EASXmN3cq4tBwQGqlMAuNQ06c6Bqk8QjobqHaPVg/exec";
+const char* SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxMBQ1ZsXD-jtYjnmYJ7SoHvjm-6mlCj--HSEa8KKKJUZa7WEfQCCEVPeF0D2mcifDAXw/exec";
 
 // Sensor pin
 const int sensorPin = A0;
@@ -59,7 +59,7 @@ void loop() {
     url += "&p1=" + String(pa, 3);
 
     // Send to Google
-    if (client.connect("script.google.com", 80)) { // HTTP port 80
+    if (client.connect("script.google.com", 443)) { // HTTPS port 443
 
       client.print(
         String("GET ") + url + " HTTP/1.1\r\n" +
