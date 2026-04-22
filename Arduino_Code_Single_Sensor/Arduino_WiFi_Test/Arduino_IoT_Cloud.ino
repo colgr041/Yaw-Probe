@@ -1,3 +1,4 @@
+#include "thingProperties.h"
 #include <WiFiS3.h>
 
 const char* WIFI_SSID     = "Pixel_4693";
@@ -21,6 +22,12 @@ WiFiSSLClient client;
 void setup() {
   Serial.begin(115200);
   delay(1000);
+
+  // IoT Cloud init
+  initProperties();
+  ArduinoCloud.begin(ArduinoIoTPreferredConnection);
+  setDebugMessageLevel(2);
+  ArduinoCloud.printDebugInfo();
   
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
   while (WiFi.status() != WL_CONNECTED) {
@@ -32,12 +39,17 @@ void setup() {
 
 void loop() {
   if (millis() - lastTime >= sampleTime) {
+    ArduinoCloud.update();
+
     lastTime = millis();
 
     float mV = (analogRead(sensorPin) * vPerUnit);
     float pa = ((mV - 500.0) * paPerMV) - 1250 + paOffset;
 
     sendToGoogle(lastTime, pa);
+
+    // Send to IoT cloud (name variable "pressure")
+    pressure = pa;
   }
 }
 
