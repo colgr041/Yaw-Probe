@@ -3,7 +3,6 @@
 const char* WIFI_SSID     = "Pixel_4693";
 const char* WIFI_PASSWORD = "Kiaalemtar1";
 
-// JUST the ID from your deployment URL
 const String scriptId = "AKfycbzAflNSHzJLlss_OeV9qJeStFWLepOGeiiKrZvRYaBC73e9tjf8hz79jbRbn7DWuzE-EA";
 const char* host = "script.google.com";
 

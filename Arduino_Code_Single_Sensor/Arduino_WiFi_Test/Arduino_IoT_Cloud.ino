@@ -38,19 +38,20 @@ void setup() {
 }
 
 void loop() {
+  ArduinoCloud.update(); // Send to IoT cloud (name variable "pressure")
+
+  lastTime = millis();
+
+  float mV = (analogRead(sensorPin) * vPerUnit);
+  float pa = ((mV - 500.0) * paPerMV) - 1250 + paOffset;
+
+  pressure = pa;
+
+
   if (millis() - lastTime >= sampleTime) {
-    ArduinoCloud.update();
-
-    lastTime = millis();
-
-    float mV = (analogRead(sensorPin) * vPerUnit);
-    float pa = ((mV - 500.0) * paPerMV) - 1250 + paOffset;
-
     sendToGoogle(lastTime, pa);
-
-    // Send to IoT cloud (name variable "pressure")
-    pressure = pa;
   }
+
 }
 
 void sendToGoogle(unsigned long t, float p) {
