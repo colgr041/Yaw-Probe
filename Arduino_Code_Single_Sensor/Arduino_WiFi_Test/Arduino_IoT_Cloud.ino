@@ -5,7 +5,7 @@ const char* WIFI_SSID     = "Hotspot Di Leo";
 const char* WIFI_PASSWORD = "Pablinaa";
 
 // JUST the ID from your deployment URL
-const String scriptId = "AKfycbzAflNSHzJLlss_OeV9qJeStFWLepOGeiiKrZvRYaBC73e9tjf8hz79jbRbn7DWuzE-EA";
+const String scriptId = "AKfycbz1twmH64GtkREpMjRrvix8OMQFEDEcrRldP7aqtVsN-xGTUcKvzRX0uZidb9Os3XE7Dw";
 const char* host = "script.google.com";
 
 const int sensorPin = A0;
