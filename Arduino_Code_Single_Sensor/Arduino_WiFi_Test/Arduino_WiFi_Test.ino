@@ -1,9 +1,9 @@
 #include <WiFiS3.h>
 
-const char* WIFI_SSID     = "Pixel_4693";
-const char* WIFI_PASSWORD = "Kiaalemtar1";
+const char* WIFI_SSID     = "Hotspot Di Leo";
+const char* WIFI_PASSWORD = "Pablinaa";
 
-const String scriptId = "AKfycbzAflNSHzJLlss_OeV9qJeStFWLepOGeiiKrZvRYaBC73e9tjf8hz79jbRbn7DWuzE-EA";
+const String scriptId = "AKfycbz1twmH64GtkREpMjRrvix8OMQFEDEcrRldP7aqtVsN-xGTUcKvzRX0uZidb9Os3XE7Dw";
 const char* host = "script.google.com";
 
 const int sensorPin = A0;

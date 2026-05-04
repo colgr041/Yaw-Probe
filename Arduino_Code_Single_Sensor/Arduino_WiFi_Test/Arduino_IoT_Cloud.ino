@@ -15,7 +15,7 @@ float vPerUnit = refVolt / 1024.0;
 float paPerMV  = 2500.0 / (4500.0 - 500.0); // Simplified calculation
 
 unsigned long lastTime = 0;
-unsigned long sampleTime = 1000;
+unsigned long sampleTime = 5000;
 
 WiFiSSLClient client;
 
