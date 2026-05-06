@@ -16,7 +16,7 @@ float paPerMV  = 2500.0 / (4500.0 - 500.0);
 unsigned long lastSampleTime = 0;
 unsigned long sampleInterval = 1000; // 1 second
 
-const int batchSize = 5;
+const int batchSize = 20;
 float pressureBuffer[batchSize];
 unsigned long timeBuffer[batchSize];
 int bufferIndex = 0;
