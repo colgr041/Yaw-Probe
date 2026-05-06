@@ -13,10 +13,12 @@ float refVolt  = 5000.0;
 float vPerUnit = refVolt / 1024.0;
 float paPerMV  = 2500.0 / (4500.0 - 500.0);
 
-unsigned long lastSampleTime = 0;
+// Timing
 unsigned long sampleInterval = 1000; // 1 second
+unsigned long nextSampleTime = 0;
 
-const int batchSize = 20;
+// Batch settings
+const int batchSize = 5;
 float pressureBuffer[batchSize];
 unsigned long timeBuffer[batchSize];
 int bufferIndex = 0;
@@ -33,23 +35,24 @@ void setup() {
     Serial.print(".");
   }
   Serial.println("\nWiFi Connected!");
+
+  nextSampleTime = millis(); // initialize schedule
 }
 
 void loop() {
-  if (millis() - lastSampleTime >= sampleInterval) {
-    lastSampleTime = millis();
+  // Precise sampling (no drift)
+  if (millis() >= nextSampleTime) {
+    nextSampleTime += sampleInterval;
 
     float mV = (analogRead(sensorPin) * vPerUnit);
     float pa = ((mV - 500.0) * paPerMV) - 1250 + paOffset;
 
-    // Store in buffer
     pressureBuffer[bufferIndex] = pa;
-    timeBuffer[bufferIndex] = lastSampleTime;
+    timeBuffer[bufferIndex] = nextSampleTime; // fixed timestamp
     bufferIndex++;
 
     Serial.println("Buffered: " + String(pa, 2));
 
-    // If buffer full → send batch
     if (bufferIndex >= batchSize) {
       sendBatch();
       bufferIndex = 0;
@@ -81,7 +84,7 @@ void sendBatch() {
     client.println("Connection: close");
     client.println();
 
-    Serial.println("Sent batch!");
+    Serial.println("Sent batch");
 
     unsigned long timeout = millis();
     while (client.connected() && millis() - timeout < 2000) {
