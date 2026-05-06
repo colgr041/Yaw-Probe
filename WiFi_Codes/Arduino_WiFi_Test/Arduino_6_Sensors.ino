@@ -3,7 +3,7 @@
 const char* WIFI_SSID     = "Hotspot Di Leo";
 const char* WIFI_PASSWORD = "Pablinaa";
 
-const String scriptId = "AKfycbxtVwCF-ey11-aJysZh2falfONfYM2r6QN0DNbjXCMNP-VnjpK35FEvNU26T2A8tb_J";
+const String scriptId = "AKfycbxE_sUwXWHQ3hDi8FSbz7GFitqB_oUvsKnhC_mb9QbFsoPlSex9I8ZLZfTi9aFJ7a_u";
 const char* host = "script.google.com";
 
 const int sensorPins[6] = {A0, A1, A2, A3, A4, A5};
