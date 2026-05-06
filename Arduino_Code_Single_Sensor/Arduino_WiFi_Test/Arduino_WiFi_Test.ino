@@ -14,7 +14,7 @@ float vPerUnit = refVolt / 1024.0;
 float paPerMV  = 2500.0 / (4500.0 - 500.0);
 
 // Timing
-unsigned long sampleInterval = 1000; // 1 second
+unsigned long sampleInterval = 500; // 1 second
 unsigned long nextSampleTime = 0;
 
 // Batch settings
