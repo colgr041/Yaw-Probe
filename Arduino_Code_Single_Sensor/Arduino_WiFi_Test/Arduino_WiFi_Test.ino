@@ -3,24 +3,30 @@
 const char* WIFI_SSID     = "Hotspot Di Leo";
 const char* WIFI_PASSWORD = "Pablinaa";
 
-const String scriptId = "AKfycbz1twmH64GtkREpMjRrvix8OMQFEDEcrRldP7aqtVsN-xGTUcKvzRX0uZidb9Os3XE7Dw";
+const String scriptId = "AKfycbzz3uQY9JE_uuTOaGcC3E7SyIkEbvtXA0z1syZgD3Duag-zFfyQmityN4lhFQuh_Skivw";
 const char* host = "script.google.com";
 
 const int sensorPin = A0;
+
 float paOffset = 15.26;
 float refVolt  = 5000.0; 
 float vPerUnit = refVolt / 1024.0;
-float paPerMV  = 2500.0 / (4500.0 - 500.0); // Simplified calculation
+float paPerMV  = 2500.0 / (4500.0 - 500.0);
 
-unsigned long lastTime = 0;
-unsigned long sampleTime = 5000;
+unsigned long lastSampleTime = 0;
+unsigned long sampleInterval = 1000; // 1 second
+
+const int batchSize = 5;
+float pressureBuffer[batchSize];
+unsigned long timeBuffer[batchSize];
+int bufferIndex = 0;
 
 WiFiSSLClient client;
 
 void setup() {
   Serial.begin(115200);
   delay(1000);
-  
+
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
@@ -30,37 +36,62 @@ void setup() {
 }
 
 void loop() {
-  if (millis() - lastTime >= sampleTime) {
-    lastTime = millis();
+  if (millis() - lastSampleTime >= sampleInterval) {
+    lastSampleTime = millis();
 
     float mV = (analogRead(sensorPin) * vPerUnit);
     float pa = ((mV - 500.0) * paPerMV) - 1250 + paOffset;
 
-    sendToGoogle(lastTime, pa);
+    // Store in buffer
+    pressureBuffer[bufferIndex] = pa;
+    timeBuffer[bufferIndex] = lastSampleTime;
+    bufferIndex++;
+
+    Serial.println("Buffered: " + String(pa, 2));
+
+    // If buffer full → send batch
+    if (bufferIndex >= batchSize) {
+      sendBatch();
+      bufferIndex = 0;
+    }
   }
 }
 
-void sendToGoogle(unsigned long t, float p) {
+void sendBatch() {
   if (client.connect(host, 443)) {
-    // Construct the path manually to ensure no hidden characters
-    String url = "/macros/s/" + scriptId + "/exec?time=" + String(t) + "&p1=" + String(p, 2);
-    
+
+    String timeData = "";
+    String pressureData = "";
+
+    for (int i = 0; i < batchSize; i++) {
+      timeData += String(timeBuffer[i]);
+      pressureData += String(pressureBuffer[i], 2);
+
+      if (i < batchSize - 1) {
+        timeData += ",";
+        pressureData += ",";
+      }
+    }
+
+    String url = "/macros/s/" + scriptId + "/exec?time=" + timeData + "&p1=" + pressureData;
+
     client.println("GET " + url + " HTTP/1.1");
     client.println("Host: script.google.com");
     client.println("User-Agent: Arduino/1.0");
     client.println("Connection: close");
     client.println();
 
-    Serial.println("Sent: " + String(p, 2) + " Pa");
-    
-    // Briefly read the response to clear the buffer
+    Serial.println("Sent batch!");
+
     unsigned long timeout = millis();
     while (client.connected() && millis() - timeout < 2000) {
-      if (client.available()) {
-        client.read(); // Just clear the data
+      while (client.available()) {
+        client.read();
       }
     }
-    client.stop(); 
+
+    client.stop();
+
   } else {
     Serial.println("Connection Failed");
   }
