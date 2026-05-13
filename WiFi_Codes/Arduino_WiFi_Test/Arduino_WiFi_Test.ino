@@ -8,17 +8,17 @@ const char* host = "script.google.com";
 
 const int sensorPin = A0;
 
-float paOffset = 15.26;
+float paOffset = 0;
 float refVolt  = 5000.0; 
 float vPerUnit = refVolt / 1024.0;
 float paPerMV  = 2500.0 / (4500.0 - 500.0);
 
 // Timing
-unsigned long sampleInterval = 500; // 1 second
+unsigned long sampleInterval = 250; // 1 second
 unsigned long nextSampleTime = 0;
 
 // Batch settings
-const int batchSize = 5;
+const int batchSize = 40; 
 float pressureBuffer[batchSize];
 unsigned long timeBuffer[batchSize];
 int bufferIndex = 0;
