@@ -10,7 +10,7 @@ const char* host = "script.google.com";
 const int sensorPins[6] = {A0, A1, A2, A3, A4, A5};
 
 // Your specific calibration values
-float paOffset = 15.26;
+float paOffset = 0;
 float refVolt  = 5000.0; 
 float vPerUnit = refVolt / 1024.0;
 float paPerMV  = 2500.0 / (4500.0 - 500.0);
@@ -29,7 +29,7 @@ WiFiSSLClient client;
 
 void setup() {
   Serial.begin(115200);
-  delay(1000);
+  analogReadResolution(10);
 
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
   while (WiFi.status() != WL_CONNECTED) {
