@@ -27,7 +27,7 @@ WiFiSSLClient client;
 
 void setup() {
   Serial.begin(115200);
-  delay(1000);
+  analogReadResolution(10);
 
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
   while (WiFi.status() != WL_CONNECTED) {
